@@ -27,7 +27,7 @@ function getTroops() {
       troops.push(i);
     }
   }
-  console.log('troops at: '+ troops);
+  //console.log('troops at: '+ troops);
 }
 
 var bombs = [];
@@ -37,22 +37,46 @@ function placeBombs() {
     // location of bombs
     bombs[i] = Math.floor(Math.random() * rowLength); 
   }
-  console.log('bombs at: '+ bombs);
+
+  // ascending sort
+  bombs.sort(function(a, b) {
+    return a - b;
+  });
+  //console.log('bombs sorted: '+ bombs);
+
+  // a set cannot contain dupes
+  bombs = new Set(bombs);
+  bombs = [... bombs];
+  //console.log('bombs unique: '+ bombs);
+  for(var k = 0; k < bombs.length; k++) {
+    fields[bombs[k]].style.backgroundColor = 'black';
+  }
+
+  //console.log('bombs at: '+ bombs);
   evaluateFight();
 }
 
 var fightResult = [];
 function evaluateFight() {
   fightResult = troops.concat(bombs);
+  // ascending sort
   fightResult.sort(function(a, b) {
     return a - b;
   });
+  //console.log('fightResult sorted: '+ fightResult);
+
+  var dead = [];
   for(var i = 0; i < fightResult.length; i++) {
-    if(fightResult[i + 1] == fightResult[i]) {
-      console.log('fight result: '+ fightResult[i]);
-      fields[i].style.backgroundColor = 'black';
+    if(fightResult[i + 1] === fightResult[i]) {
+      //console.log('fight result: '+ fightResult[i]);
+      dead.push(fightResult[i]);
     }
   }
+  
+  for(var j = 0; j < dead.length; j++) {
+    fields[dead[j]].style.backgroundColor = 'red';
+  }
+  //console.log('dead: '+ dead);
 }
 
 
