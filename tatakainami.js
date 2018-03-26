@@ -57,6 +57,11 @@ function getTroops() {
       troops.push(i);
     }
   }
+
+  if(troops.length == 0) {
+    alert('Please place your troops!');
+    throw new Error('Please reload the page and place your troops');
+  }
   //console.log('troops at: '+ troops);
 }
 
