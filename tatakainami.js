@@ -1,11 +1,41 @@
-var rowLength = 8;
+var bombsScore = 0;
+var bombsScoreLabel = null;
+var troopsScore = 0;
+var troopsScoreLabel = null;
+function gameStatus() {
+  bombsScoreLabel = document.createElement('p');
+  bombsScoreLabel.innerHTML = 'Bombs: '+ bombsScore;
+  troopsScoreLabel = document.createElement('p');
+  troopsScoreLabel.style.color = 'blue';
+  troopsScoreLabel.innerHTML = 'Troops: '+ troopsScore;
+  var statusDiv = document.getElementById('status');
+  statusDiv.appendChild(bombsScoreLabel);
+  statusDiv.appendChild(troopsScoreLabel);
+}
+
+var turnCount = 0;
 var fields = [];
-function createGameBoard() {
+function createGameBoard(rowLength) {
+  ++turnCount;
+  //console.log('turnCount: '+ turnCount);
+  //console.log('rowLength: '+ rowLength);
+  var gameBoardDiv = document.getElementById('gameBoard');
   for(var i = 0; i < rowLength; i++) {
     fields[i] = document.createElement('div');
     fields[i].id = 'unchecked';
+    fields[i].className = 'field';
     fields[i].setAttribute('onclick', 'placeTroops(event)');
-    document.body.appendChild(fields[i]);
+    fields[i].style.border = '1px solid green';
+    fields[i].style.width = 50;
+    fields[i].style.height = 50;
+    fields[i].style.position = 'absolute';
+    fields[i].style.left = (turnCount * 25) + (i * 50);
+    fields[i].style.top = rowLength * 50;
+    if(gameBoardDiv.firstChild) {
+      gameBoardDiv.insertBefore(fields[i], gameBoardDiv.firstChild);
+    } else {
+      gameBoardDiv.appendChild(fields[i]);
+    }
   }
 }
 
@@ -33,9 +63,9 @@ function getTroops() {
 var bombs = [];
 function placeBombs() {
   // generate random number from 0 to row length / 2 = # of bombs per row
-  for(var i = 0; i < rowLength / 2; i++) {
+  for(var i = 0; i < fields.length / 2; i++) {
     // location of bombs
-    bombs[i] = Math.floor(Math.random() * rowLength); 
+    bombs[i] = Math.floor(Math.random() * fields.length); 
   }
 
   // ascending sort
@@ -72,11 +102,39 @@ function evaluateFight() {
       dead.push(fightResult[i]);
     }
   }
-  
-  for(var j = 0; j < dead.length; j++) {
-    fields[dead[j]].style.backgroundColor = 'red';
+
+  if(dead.length > 0) {
+    for(var j = 0; j < dead.length; j++) {
+      fields[dead[j]].style.backgroundColor = 'red';
+    }
+    //console.log('dead: '+ dead);
+    bombsScore += dead.length;
+    bombsScoreLabel.innerHTML = 'Bombs: '+ bombsScore;
   }
-  //console.log('dead: '+ dead);
+  
+  troopsScore += troops.length - dead.length;
+  troopsScoreLabel.innerHTML = 'Troops: '+ troopsScore;
+  
+  var previousFields = fields;
+  for(var k = 0; k < previousFields.length; k++) {
+    previousFields[k].removeAttribute('onclick');
+  }
+  
+  if(fields.length == 3) {
+    if(troopsScore > bombsScore) {
+      troopsScoreLabel.innerHTML = "You WON!";
+      bombsScoreLabel.innerHTML = "You lost";
+    } else {
+      bombsScoreLabel.innerHTML = "You WON!";
+      troopsScoreLabel.innerHTML = "You lost";
+    }
+    
+    var fightBtn = document.getElementById('fight');
+    fightBtn.setAttribute('disabled');
+    return 0;
+  }
+
+  createGameBoard(--fields.length);
 }
 
 
