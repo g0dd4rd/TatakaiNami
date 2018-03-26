@@ -5,9 +5,15 @@
  <script src="tatakainami.js"></script>
  <title>Tatakai Nami</title>
 </head>
-<body onload="createGameBoard()">
+<body>
 <h4>Tatakai Nami</h4>
-<input type="button" onclick="getTroops(); placeBombs();" value="Fight!"/>
+<div id="status"></div>
+<script>gameStatus();</script>
+<div id="gameBoard"></div>
+<script>createGameBoard(8);</script>
+<div id="fightButton">
+ <input type="button" onclick="getTroops(); placeBombs();" value="Fight!" id="fight"/>
+</div>
 </body>
 </html>
 
