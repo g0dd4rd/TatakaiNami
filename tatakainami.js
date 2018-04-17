@@ -89,6 +89,7 @@ function placeBombs() {
 
   //console.log('bombs at: '+ bombs);
   evaluateFight();
+  bombs = [];
 }
 
 var fightResult = [];
@@ -99,6 +100,7 @@ function evaluateFight() {
     return a - b;
   });
   //console.log('fightResult sorted: '+ fightResult);
+  console.log(fightResult.length);
 
   var dead = [];
   for(var i = 0; i < fightResult.length; i++) {
@@ -107,6 +109,7 @@ function evaluateFight() {
       dead.push(fightResult[i]);
     }
   }
+  fightResult = [];
 
   if(dead.length > 0) {
     for(var j = 0; j < dead.length; j++) {
@@ -119,7 +122,8 @@ function evaluateFight() {
   
   troopsScore += troops.length - dead.length;
   troopsScoreLabel.innerHTML = 'Troops: '+ troopsScore;
-  
+  troops = [];  
+
   var previousFields = fields;
   for(var k = 0; k < previousFields.length; k++) {
     previousFields[k].removeAttribute('onclick');
@@ -135,10 +139,11 @@ function evaluateFight() {
     }
     
     var fightBtn = document.getElementById('fight');
-    fightBtn.setAttribute('disabled');
+    fightBtn.disabled = true;
     return 0;
   }
 
+  //fields = [];
   createGameBoard(--fields.length);
 }
 
